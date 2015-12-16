@@ -139,6 +139,13 @@ module Dinamo
           fail Exceptions::ValidationError
         end
       end
+
+      def reload!
+        fresh_object = self.class.get(primary_keys)
+        @attributes = fresh_object.instance_variable_get(:'@attributes')
+        @new_record = false
+        self
+      end
     end
   end
 end

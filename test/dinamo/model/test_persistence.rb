@@ -307,4 +307,19 @@ class TestPersistence < BaseTestCase
       end
     end
   end
+
+  sub_test_case "#reload!" do
+    sub_test_case "when current record is reloaded" do
+      setup do
+        @instance = create_dinamo(klass: Ghana, foo: "1234")
+        @object_id = @instance.object_id
+        Ghana.get(@instance.primary_keys).update(foo: "5678")
+        @instance.reload!
+      end
+      test "should be truthy" do
+        assert { @object_id = @instance.object_id }
+        assert { @instance.foo == "5678" }
+      end
+    end
+  end
 end
