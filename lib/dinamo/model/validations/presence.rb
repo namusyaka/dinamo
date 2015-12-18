@@ -2,9 +2,6 @@ class Dinamo::Model
   module Validation
     class PresenceValidator < EachValidator
       def validate_each(record, key, value)
-        #p record
-        #p key
-        #p value
         record.errors.add(key, :blank) if value.blank?
       end
     end
