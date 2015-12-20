@@ -20,6 +20,10 @@ module Dinamo
           new(**symbolize(item))
         end
 
+        def exist?(**keys)
+          adapter.exist?(**keys)
+        end
+
         def create(attributes = nil, &block)
           object = new(**attributes, &block)
           object.new_record = true

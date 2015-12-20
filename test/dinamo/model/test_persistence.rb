@@ -69,6 +69,26 @@ class TestPersistence < BaseTestCase
       end
     end
   end
+  sub_test_case ".exist?" do
+    sub_test_case "when matched record exists" do
+      setup do
+        @attributes = { foo: "hello" }
+        @expected   = create_dinamo(klass: Ghana, **@attributes)
+      end
+
+      test "should get a record" do
+        assert { Ghana.exist?(**@expected.primary_keys) }
+      end
+    end
+
+    sub_test_case "when matched record doesn't exists" do
+      setup { @attributes = { foo: "hello" } }
+
+      test "should not get a record" do
+        assert { not Ghana.exist?(**@attributes) }
+      end
+    end
+  end
 
   sub_test_case ".get" do
     sub_test_case "when matched record exists" do
