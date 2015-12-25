@@ -56,8 +56,8 @@ module Dinamo
         end
 
         def default_values
-          Hash[supported_fields.select(&:default).
-            map { |field| [field.name, field.default] }].with_indifferent_access
+          Hash[supported_fields.select { |field| not field.default.nil? }
+            .map { |field| [field.name, field.default] }].with_indifferent_access
         end
 
         def primary_keys
