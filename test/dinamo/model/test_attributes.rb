@@ -1,5 +1,6 @@
 require 'helper'
 require 'support/dinamo/database'
+require 'support/models/huge'
 
 class TestAttributes < BaseTestCase
   def self.model
@@ -114,6 +115,28 @@ class TestAttributes < BaseTestCase
         @instance[:unexistence] = true
         assert { @instance[:unexistence] == true }
         assert { @instance.unexistence   == true }
+      end
+    end
+  end
+
+  sub_test_case "default values" do
+    sub_test_case "when value is not set" do
+      setup do
+        @instance = build_dinamo(klass: Huge)
+      end
+
+      test "should be pointed default value" do
+        assert { @instance.lucky_number == 1 }
+      end
+    end
+
+    sub_test_case "when value is set" do
+      setup do
+        @instance = build_dinamo(klass: Huge, lucky_number: 2)
+      end
+
+      test "should be pointed specified value correctly" do
+        assert { @instance.lucky_number == 2 }
       end
     end
   end

@@ -15,6 +15,9 @@ module Dinamo
           silent_assign(**attributes)
           self.class.define_attribute_methods(*attributes.keys)
         end
+        after(:initialize) do
+          @attributes = self.class.default_values.merge(@attributes)
+        end
 
         before :attribute_update do |attribute, value|
           pkey = primary_keys[attribute]
@@ -50,6 +53,11 @@ module Dinamo
             end
           end
           attribute_methods << attr
+        end
+
+        def default_values
+          Hash[supported_fields.select(&:default).
+            map { |field| [field.name, field.default] }].with_indifferent_access
         end
 
         def primary_keys
@@ -144,13 +152,14 @@ module Dinamo
       end
 
       class Key
-        attr_reader :name, :type
+        attr_reader :name, :type, :default
 
-        def initialize(name, type: nil, required: false, primary: false, **options)
-          @name = name
-          @type = type
+        def initialize(name, type: nil, required: false, primary: false, default: nil, **options)
+          @name     = name
+          @type     = type
           @required = required
-          @primary = primary
+          @primary  = primary
+          @default  = default
         end
 
         def required?
