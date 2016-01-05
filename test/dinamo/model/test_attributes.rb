@@ -140,4 +140,39 @@ class TestAttributes < BaseTestCase
       end
     end
   end
+
+  sub_test_case "unsupported values" do
+    sub_test_case "when strict is set to true" do
+      setup do
+        @instance = build_dinamo(klass: Ghana, unsuppo: "hey")
+      end
+
+      test "should be abort" do
+        assert_raise Dinamo::Exceptions::ValidationError do
+          @instance.save!
+        end
+      end
+    end
+
+    sub_test_case "when strict is set to false" do
+      setup do
+        rewinder = Dinamo::Test::Database::Rewinder.new(Huge)
+        rewinder.create_table unless rewinder.exist?
+        @instance = build_dinamo(klass: Huge, unsuppo: "hey")
+      end
+
+      shutdown do
+        rewinder = Dinamo::Test::Database::Rewinder.new(Huge)
+        rewinder.drop_table if rewinder.exist?
+      end
+
+      test "should ignore unsupported value" do
+        @instance.save!
+        attributes = @instance.attributes
+        assert { not attributes.has_key?(:unsuppo) }
+        assert { attributes.has_key?(:id) }
+        assert { attributes.has_key?(:type) }
+      end
+    end
+  end
 end

@@ -25,6 +25,13 @@ module Dinamo
             raise Exceptions::PrimaryKeyError, "%p cannot be modified" % attribute
           end
         end
+
+        after :attribute_update do |attribute, value|
+          unless self.class.strict? ||
+            self.class.supported_fields.find { |key| key.name == attribute.to_s }
+              attributes.delete(attribute)
+          end
+        end
       end
 
       module ClassMethods

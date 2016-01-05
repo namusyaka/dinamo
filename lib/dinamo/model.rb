@@ -35,6 +35,14 @@ module Dinamo
       def table_name=(name)
         @table_name = name
       end
+
+      def strict(bool)
+        @strict = bool
+      end
+
+      def strict?
+        @strict.nil? ? true : @strict
+      end
     end
 
     default_casters do
