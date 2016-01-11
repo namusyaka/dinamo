@@ -153,7 +153,7 @@ module Dinamo
       alias equal? ==
 
       def primary_keys
-        @primary_keys ||= self.class.primary_keys.inject({}) do |keys, (_, key)|
+        self.class.primary_keys.inject({}) do |keys, (_, key)|
           keys.merge(key => attributes[key])
         end
       end
