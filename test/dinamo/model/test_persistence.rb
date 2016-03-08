@@ -100,6 +100,10 @@ class TestPersistence < BaseTestCase
       test "should get a record" do
         assert { @expected == Ghana.get(**@expected.primary_keys) }
       end
+
+      test "should not get a record as new record" do
+        assert { not Ghana.get(**@expected.primary_keys).new_record? }
+      end
     end
 
     sub_test_case "when matched record doesn't exists" do

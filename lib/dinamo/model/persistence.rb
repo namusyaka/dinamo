@@ -17,7 +17,9 @@ module Dinamo
           item = adapter.get(**keys).item 
           fail Exceptions::RecordNotFoundError,
             "Corresponding record (%p) can not be found" % keys unless item
-          new(**symbolize(item))
+          object = new(**symbolize(item))
+          object.new_record = false
+          object
         end
 
         def exist?(**keys)
