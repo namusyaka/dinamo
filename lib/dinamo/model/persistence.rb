@@ -72,7 +72,7 @@ module Dinamo
       end
 
       def destroyed?
-        @destroyed
+        !!@destroyed
       end
 
       def persisted?
