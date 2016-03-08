@@ -123,4 +123,34 @@ class TestAdapter < BaseTestCase
       end
     end
   end
+
+  sub_test_case "#delet" do
+    setup do
+      @adapter = Dinamo::Adapter.new(table_name: 'dinamo_tests')
+      @primary_keys = make_primary_keys(klass: Ghana)
+      @adapter.insert @primary_keys
+    end
+
+    sub_test_case "normal system" do
+      test <<-EOS do
+        should return an instance of Seahorse::Client::Response
+          if passed key matches with exsiting records
+      EOS
+        assert do
+          result = @adapter.delete(@primary_keys)
+          result.kind_of? Seahorse::Client::Response
+        end
+      end
+
+      test <<-EOS do
+        should return an instance of Seahorse::Client::Response
+          if passed key doesn't matches with exsiting records
+      EOS
+        assert_raise Dinamo::Exceptions::RecordNotFoundError do
+          pkey = @primary_keys.merge(type: 'hogefuga')
+          @adapter.delete(pkey)
+        end
+      end
+    end
+  end
 end

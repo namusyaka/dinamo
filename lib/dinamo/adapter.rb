@@ -50,7 +50,7 @@ module Dinamo
 
     def delete(key)
       find_or_abort!(**key)
-      @database.update_item(
+      @database.delete_item(
         table_name: @table_name,
         key: key
       )
