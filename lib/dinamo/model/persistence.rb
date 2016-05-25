@@ -22,6 +22,21 @@ module Dinamo
           object
         end
 
+        def partition(**conditions)
+          partition!(**conditions) rescue nil
+        end
+
+        def partition!(**conditions)
+          items = adapter.partition(**conditions).items
+          fail Exceptions::RecordNotFoundError,
+            "Corresponding record (%p) can not be found" % conditions if items.empty?
+          items.map do |item|
+            object = new(**symbolize(item))
+            object.new_record = false
+            object
+          end
+        end
+
         def exist?(**keys)
           adapter.exist?(**keys)
         end
