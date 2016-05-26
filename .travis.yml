@@ -8,3 +8,5 @@ install:
 before_script:
   - java -Djava.library.path=/tmp/dynamodb/DynamoDBLocal_lib -jar /tmp/dynamodb/DynamoDBLocal.jar -sharedDb -inMemory &
   - sleep 2
+  - bundle update
+cache: bundler
