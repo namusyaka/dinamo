@@ -346,4 +346,62 @@ class TestPersistence < BaseTestCase
       end
     end
   end
+
+  sub_test_case ".partition" do
+    setup do
+      @id = Random.new_seed.to_s.slice(0, 20).to_i
+      @instances = []
+      10.times do |n|
+        @instances << create_dinamo(klass: Ghana, id: @id, type: "fuga#{n}")
+      end
+    end
+
+    sub_test_case "when matched record exists" do
+      test "should get a records" do
+        assert { @instances[0] == Ghana.partition(id: @id, type: "fuga0").first }
+      end
+    end
+
+    sub_test_case "when multiple matched records exist" do
+      test "should get all record" do
+        assert { @instances == Ghana.partition(id: @id) }
+      end
+    end
+
+    sub_test_case "when matched records doesn't exist" do
+      test "should not get a record" do
+        assert { Ghana.partition(id: @id.to_s.reverse.to_i).nil? }
+      end
+    end
+  end
+
+  sub_test_case ".partition!" do
+    setup do
+      @id = Random.new_seed.to_s.slice(0, 20).to_i
+      @instances = []
+      10.times do |n|
+        @instances << create_dinamo(klass: Ghana, id: @id, type: "fuga#{n}")
+      end
+    end
+
+    sub_test_case "when matched record exists" do
+      test "should get a records" do
+        assert { @instances[0] == Ghana.partition!(id: @id, type: "fuga0").first }
+      end
+    end
+
+    sub_test_case "when multiple matched records exist" do
+      test "should get all record" do
+        assert { @instances == Ghana.partition!(id: @id) }
+      end
+    end
+
+    sub_test_case "when matched records doesn't exist" do
+      test "should not get a record" do
+        assert_raise Dinamo::Exceptions::RecordNotFoundError do
+          Ghana.partition!(id: @id.to_s.reverse.to_i).nil?
+        end
+      end
+    end
+  end
 end

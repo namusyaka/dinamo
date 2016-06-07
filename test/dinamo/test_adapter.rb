@@ -40,6 +40,28 @@ class TestAdapter < BaseTestCase
     end
   end
 
+  sub_test_case "#partition" do
+    setup do
+      @id = Random.new_seed.to_s.slice(0, 20).to_i
+      @adapter = Dinamo::Adapter.new(table_name: 'dinamo_tests')
+      10.times do |n|
+        @adapter.insert id: @id, type: "hoge#{n}"
+      end
+    end
+
+    sub_test_case "when passed key is only range key" do
+      test "should return array" do
+        assert { @adapter.partition(id: @id).items.length == 10 }
+      end
+    end
+
+    sub_test_case "when passed keys are hash and range key" do
+      test "should return array" do
+        assert { @adapter.partition(id: @id, type: "hoge1").items.length == 1 }
+      end
+    end
+  end
+
   sub_test_case "#exist?" do
     setup do
       @adapter = Dinamo::Adapter.new(table_name: 'dinamo_tests')
