@@ -1,5 +1,9 @@
 # Dinamo
 
+[![build status](https://img.shields.io/travis/namusyaka/dinamo.svg?style=flat-square)](http://travis-ci.org/namusyaka/dinamo)
+[![gem](https://img.shields.io/gem/v/dinamo.svg?style=flat-square)](https://rubygems.org/gems/dinamo)
+[![license](https://img.shields.io/github/license/namusyaka/dinamo.svg?style=flat-square)](https://github.com/namusyaka/dinamo/blob/master/LICENSE.txt)
+
 Dinamo is a ORM for [Dynamo DB](https://aws.amazon.com/dynamodb/), it has followed the behavior of the ORM which is often seen in the Ruby culture.
 
 ## Installation
