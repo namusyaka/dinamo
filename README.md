@@ -1,6 +1,6 @@
 # Dinamo
 
-Dinamo is an simple ORM for Amazon DynamoDB for Ruby applications.
+Dinamo is a ORM for [Dynamo DB](https://aws.amazon.com/dynamodb/), it has followed the behavior of the ORM which is often seen in the Ruby culture.
 
 ## Installation
 
@@ -18,27 +18,68 @@ Or install it yourself as:
 
     $ gem install dinamo
 
+## Overview
+
+Dinamo makes it easy to create DynamoDB record from any ruby object. Also, dinamo supports for [data types of Dynamo DB](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html) such as scaler types, document types and set types. This means things that you can declare their types on your model.
+
+Of course, you can use validations, casting and model change tracking smoothly.
+Next section will describe their things with example code.
+
 ## Usage
 
-### Sample
-
-Your class must inherit `Dinamo::Model` in every Dinamo model.
+### Model definition
 
 ```ruby
 class User < Dinamo::Model
-  hash_key :id, type: :number
-  range_key :kind, type: :string
-  field :name, type: :string
+  hash_key :name, type: :string
+  field    :age,  type: :number
+end
+```
+
+### Building/Saving
+
+```ruby
+user = User.new(name: 'numb', age: 24)
+user.persisted? #=> false
+user.save
+user.persisted? #=> true
+```
+
+Or you can use `create`.
+
+```ruby
+user = User.create(name: 'numb', age: 24)
+user.persisted? #=> true
+```
+
+### Dirty (model change tracking)
+
+```ruby
+user = User.new(name: 'numb', age: 24)
+user.changed? #=> false
+user.age = 25
+user.changed? #=> true
+user.save
+user.changed? #=> false
+```
+
+### Validation
+
+```ruby
+class NameLengthValidator < Dinamo::Model::Validation::Validator
+  def validate(record)
+    unless options[:length].include?(record.name.length)
+      record.errors.add(:name, I18n.t("models.user.error.length"))
+    end
+  end
 end
 
-user = User.new
-user.id   = 1
-user.kind = "developer"
-user.name = "namusyaka"
+class User < Dinamo::Model
+  hash_key :id
+  field :name, type: :string
 
-user.valid? #=> true
-user.errors #=> {}
-user.save #=> true
+  validates_with NameLengthValidator, length: 1..30
+end
 ```
 
 ## Contributing
