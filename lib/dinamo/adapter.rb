@@ -1,5 +1,5 @@
 require 'dinamo/exceptions'
-require 'aws-sdk'
+require 'aws-sdk-dynamodb'
 
 module Dinamo
   class Adapter

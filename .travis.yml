@@ -5,7 +5,7 @@ rvm:
 before_install: gem install bundler -v 1.10.6
 install:
   - mkdir /tmp/dynamodb
-  - wget -O - http://dynamodb-local.s3-website-us-west-2.amazonaws.com/dynamodb_local_latest | tar xz --directory /tmp/dynamodb
+  - wget -O - https://s3-ap-northeast-1.amazonaws.com/dynamodb-local-tokyo/dynamodb_local_latest.tar.gz | tar xz --directory /tmp/dynamodb
 before_script:
   - java -Djava.library.path=/tmp/dynamodb/DynamoDBLocal_lib -jar /tmp/dynamodb/DynamoDBLocal.jar -sharedDb -inMemory &
   - sleep 2
